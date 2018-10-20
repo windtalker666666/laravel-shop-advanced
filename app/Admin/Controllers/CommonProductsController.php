@@ -95,6 +95,11 @@ abstract class CommonProductsController extends Controller
             $form->model()->price = collect($form->input('skus'))->where(Form::REMOVE_FLAG_NAME, 0)->min('price') ?: 0;
         });
 
+        $form->hasMany('properties', '商品属性', function (Form\NestedForm $form) {
+            $form->text('name', '属性名')->rules('required');
+            $form->text('value', '属性值')->rules('required');
+        });
+
         return $form;
     }
 
