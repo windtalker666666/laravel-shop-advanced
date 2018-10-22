@@ -10,6 +10,7 @@ use Encore\Admin\Layout\Content;
 use App\Models\Category;
 use Encore\Admin\Grid;
 use Encore\Admin\Form;
+use App\Jobs\SyncOneProductToES;
 
 abstract class CommonProductsController extends Controller
 {
@@ -101,6 +102,11 @@ abstract class CommonProductsController extends Controller
             $form->text('value', '属性值')->rules('required');
         });
 
+        $form->saved(function (Form $form) {
+            $product = $form->model();
+            $this->dispatch(new SyncOneProductToES($product));
+        });
+        
         return $form;
     }
 
